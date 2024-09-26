@@ -8,7 +8,6 @@ local action_state = require("telescope.actions.state")
 local telescope_config = require("telescope.config").values
 local history = require("telescope._extensions.smart_open.history")
 local make_display = require("telescope._extensions.smart_open.display.make_display")
-local smart_open_actions = require("smart-open.actions")
 
 local picker
 local M = {}
@@ -62,26 +61,6 @@ function M.start(opts)
           db:save_weights(revised_weights)
         end,
       })
-
-      local applied_mappings = { n = {}, i = {} }
-
-      if config.mappings then
-        for mode, mode_map in pairs(config.mappings) do
-          mode = string.lower(mode)
-
-          for key_bind, key_func in pairs(mode_map) do
-            local key_bind_internal = vim.api.nvim_replace_termcodes(key_bind, true, true, true)
-
-            applied_mappings[mode][key_bind_internal] = true
-
-            map(mode, key_bind_internal, key_func)
-          end
-        end
-      end
-
-      if not applied_mappings.i["<C-w>"] then
-        map("i", "<C-w>", smart_open_actions.delete_buffer)
-      end
 
       return true
     end,
